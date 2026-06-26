@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Neon Heart</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --glow-color: #ff2d75;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #050505; /* Deep black */
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* The Container that tilts */
+        #wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        /* The Glow behind the heart */
+        .glow {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: var(--glow-color);
+            filter: blur(80px);
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: 1;
+        }
+
+        /* The Heart Shape (SVG for perfect look) */
+        svg {
+            width: 200px;
+            height: 200px;
+            fill: var(--glow-color);
+            filter: drop-shadow(0 0 20px var(--glow-color));
+            z-index: 2;
+            animation: pulse 1.5s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Message that appears on click */
+        #message {
+            position: absolute;
+            color: white;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        #message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 0 15px var(--glow-color);
+        }
+
+        .hint {
+            position: fixed;
+            bottom: 20px;
+            color: #444;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wrapper">
+        <div class="glow"></div>
+        
+        <!-- SVG Heart for maximum compatibility -->
+        <svg id="heart" viewBox="0 0 32 32">
+            <path d="M16 28.5L14.1 26.7C7.33 20.55 3 16.5 3 11.5 3 7.42 6.42 4 10.5 4c2.31 0 4.53 1.08 6 2.77C17.97 5.08 20.19 4 22.5 4 26.58 4 30 7.42 30 11.5c0 5-4.33 9.05-11.1 15.2L16 28.5z"/>
+        </svg>
+
+        <div id="message">
+            <h1>LOVE YOU</h1>
+            <p>nigger</p>
+        </div>
+    </div>
+
+    <div class="hint">Move mouse to tilt • Click heart</div>
+
+    <script>
+        /* --- JAVASCRIPT --- */
+        const wrapper = document.getElementById('wrapper');
+        const heart = document.getElementById('heart');
+        const message = document.getElementById('message');
+
+        // Smooth Mouse Tracking (Tilt Effect)
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // Calculate center of screen
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Calculate rotation (Divide by 15 to keep it subtle)
+            const rotateX = (centerY - y) / 15;
+            const rotateY = (x - centerX) / 15;
+
+            // Apply the transform
+            wrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        // Touch support for Mobile
+        document.addEventListener('touchmove', (e) => {
+            const x = e.touches[0].clientX;
+            const y = e.touches[0].clientY;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const rotateX = (centerY - y) / 15;
+            const rotateY = (x - centerX) / 15;
+            wrapper.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        // Click Reveal Interaction
+        heart.addEventListener('click', () => {
+            // Hide heart
+            heart.style.transition = "0.4s";
+            heart.style.transform = "scale(0)";
+            heart.style.opacity = "0";
+
+            // Show message
+            setTimeout(() => {
+                message.classList.add('show');
+            }, 300);
+        });
+    </script>
+</body>
+</html>
